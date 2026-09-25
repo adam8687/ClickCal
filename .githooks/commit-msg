@@ -8,7 +8,7 @@
 # Enabled via: git config core.hooksPath .githooks
 
 msg_file="$1"
-tmp_file="$msg_file.quickcal.tmp"
+tmp_file="$msg_file.clickcal.tmp"
 
 pattern='^[[:space:]]*(co-authored-by|signed-off-by|co-committed-by)[[:space:]]*:.*(cursor|claude|anthropic|copilot|openai|codex|chatgpt|gemini|devin|\[bot\])'
 
