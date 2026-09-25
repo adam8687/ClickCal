@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.log
+
+# Local secrets: BYO API keys for the cloud provider fallback
+.env
+.env.local
+
+# Eval harness outputs
+eval/results/
+eval/.cache/
+
+.DS_Store
+Thumbs.db

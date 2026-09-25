@@ -1,0 +1,33 @@
+#!/bin/sh
+# Strip machine co-authorship trailers before a commit is recorded.
+#
+# Some editors and agent tools append "Co-authored-by:" trailers naming themselves.
+# Authorship of this repository is a single human; this hook keeps the history
+# honest about that rather than crediting a tool vendor on every commit.
+#
+# Enabled via: git config core.hooksPath .githooks
+
+msg_file="$1"
+tmp_file="$msg_file.quickcal.tmp"
+
+pattern='^[[:space:]]*(co-authored-by|signed-off-by|co-committed-by)[[:space:]]*:.*(cursor|claude|anthropic|copilot|openai|codex|chatgpt|gemini|devin|\[bot\])'
+
+if grep -qiE "$pattern" "$msg_file"; then
+  grep -viE "$pattern" "$msg_file" >"$tmp_file"
+
+  # Drop any blank lines the removal left dangling at the end of the message.
+  while [ -s "$tmp_file" ] && [ -z "$(tail -n 1 "$tmp_file")" ]; do
+    sed -i '$ d' "$tmp_file"
+  done
+
+  if [ -s "$tmp_file" ]; then
+    mv "$tmp_file" "$msg_file"
+  else
+    # Refuse to produce an empty message; surface the problem instead.
+    rm -f "$tmp_file"
+    echo "commit-msg: refusing to strip trailers, message would be empty" >&2
+    exit 1
+  fi
+fi
+
+exit 0
