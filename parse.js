@@ -80,3 +80,9 @@ function parseEvent(text) {
 
   return { title: findTitle(text), start, end, hasDate: !!date, hasTime: !!time };
 }
+
+// In Chrome this file is a plain script and `parseEvent` is simply global.
+// Node has no such globals, so expose it there for the tests.
+if (typeof module !== "undefined") {
+  module.exports = { parseEvent };
+}
