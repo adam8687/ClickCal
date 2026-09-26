@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "ClickCal",
+  "version": "0.1.0",
+  "description": "Turn text you highlight on any page into a Google Calendar event.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ClickCal"
+  }
+}
