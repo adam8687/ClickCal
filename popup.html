@@ -10,9 +10,32 @@
 
       <p class="hint" id="hint">Reading the page&hellip;</p>
 
-      <pre class="capture" id="capture"></pre>
+      <form class="draft" id="draft" hidden>
+        <label class="field">
+          <span class="label">Event</span>
+          <input type="text" id="event-title" autocomplete="off" />
+        </label>
+
+        <div class="row">
+          <label class="field">
+            <span class="label">Date</span>
+            <input type="date" id="event-date" />
+          </label>
+
+          <label class="field">
+            <span class="label">Time</span>
+            <input type="time" id="event-time" />
+          </label>
+        </div>
+
+        <p class="warning" id="warning" hidden></p>
+
+        <button class="save" type="submit">Add to Google Calendar</button>
+      </form>
     </main>
 
+    <script src="parse.js"></script>
+    <script src="calendar.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
