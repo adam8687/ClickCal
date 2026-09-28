@@ -44,8 +44,19 @@ test("admits when it found no date or time", () => {
   assert.strictEqual(event.hasTime, false);
 });
 
-test("does not claim to understand the word tomorrow", () => {
-  // A known gap. This test locks in the honest answer so a future change to
-  // relative dates has to update it deliberately.
-  assert.strictEqual(parseEvent("Study group tomorrow 5pm").hasDate, false);
+test("understands relative wording", () => {
+  // Wednesday, 2026-03-04.
+  const wednesday = new Date(2026, 2, 4);
+  const event = parseEvent("Study group tomorrow 5pm", wednesday);
+
+  assert.strictEqual(event.hasDate, true);
+  assert.strictEqual(event.start.getDate(), 5);
+  assert.strictEqual(event.start.getHours(), 17);
+});
+
+test("an explicit date beats relative wording in the same text", () => {
+  const wednesday = new Date(2026, 2, 4);
+  const event = parseEvent("Rescheduled from tomorrow to March 20, 2026", wednesday);
+
+  assert.strictEqual(event.start.getDate(), 20);
 });

@@ -21,9 +21,14 @@ const NUMERIC_DATE = /\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/;
 // "5pm", "5:30 PM", "17:00"
 const TIME = /\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b|\b(\d{1,2}):(\d{2})\b/i;
 
-function findDate(text) {
-  const now = new Date();
+// In Chrome, dates.js loads first and leaves `resolveRelativeDate` on the page.
+// Node has no shared globals, so ask for the file directly instead.
+const resolveRelative =
+  typeof resolveRelativeDate === "function"
+    ? resolveRelativeDate
+    : require("./dates.js").resolveRelativeDate;
 
+function findDate(text, now) {
   const monthMatch = text.match(MONTH_DAY);
   if (monthMatch) {
     const month = MONTHS.findIndex((m) => m.startsWith(monthMatch[1].toLowerCase()));
@@ -39,7 +44,8 @@ function findDate(text) {
     return { year, month: Number(numericMatch[1]) - 1, day: Number(numericMatch[2]) };
   }
 
-  return null;
+  // An explicit date always wins; only fall back to wording like "next Friday".
+  return resolveRelative(text, now);
 }
 
 function findTime(text) {
@@ -63,10 +69,10 @@ function findTitle(text) {
 
 // Returns { title, start, end, hasDate, hasTime }. `start` and `end` are real
 // Date objects so the caller never has to think about date math.
-function parseEvent(text) {
-  const date = findDate(text);
+function parseEvent(text, now = new Date()) {
+  const date = findDate(text, now);
   const time = findTime(text);
-  const fallback = new Date();
+  const fallback = now;
 
   const start = new Date(
     date ? date.year : fallback.getFullYear(),
